@@ -777,6 +777,23 @@ function WireLib.levenshtein( s, t )
 	return d[#d]
 end
 
+--- Escape a string so it can be searched for literally with Lua's pattern functions.
+function WireLib.PatternEscape(literal)
+	-- "x: (where x is not one of the magic characters ^$()%.[]*+-?) represents the character x itself."
+	--   - https://www.lua.org/manual/5.3/manual.html#6.4.1
+	return literal:gsub("[%^%$%(%)%%%.%[%]%*%+%-%?]", "%%%1")
+end
+
+--- Escape a string to be used as a literal replacement with Lua's pattern functions.
+function WireLib.ReplacePatternEscape(literal)
+	-- "If repl is a string, then its value is used for replacement. The character % works as an
+	-- escape character: any sequence in repl of the form %d, with d between 1 and 9, stands for
+	-- the value of the d-th captured substring. The sequence %0 stands for the whole match. The
+	-- sequence %% stands for a single %."
+	--   - https://www.lua.org/manual/5.3/manual.html#pdf-string.gsub
+	return literal:gsub("%%", "%%%1")
+end
+
 --[[
 	nicenumber
 	by Divran
